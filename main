@@ -1,0 +1,24 @@
+<?php
+
+$botToken = "YOUR_BOT_TOKEN";
+
+// Get update data from Telegram
+$update = json_decode(file_get_contents("php://input"), true);
+$user_id = $update['message']['from']['id'];
+$input = $update['message']['text'];
+
+// Function to send a message via Telegram Bot API
+function send_message($user_id, $response, $keyboard = null) {
+    global $botToken;
+    $response = urlencode($response);
+    $url = "https://api.telegram.org/bot$botToken/sendMessage?chat_id=$user_id&text=$response";
+    if ($keyboard) {
+      $url .= "&reply_markup=" . urlencode($keyboard);;
+    }
+    file_get_contents($url);
+}
+
+// Sending back what the user sent
+send_message($user_id, $input);
+
+?>
